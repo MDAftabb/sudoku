@@ -1,3 +1,6 @@
+import copy
+
+
 PUZZLE = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -38,6 +41,10 @@ def is_valid(board,row,col,num):
             if board[r][c] == num:
                 return False
     return True
+
+def find_empty(board):
+    for r in range(9):
+        
 
 def run_tests():
     
