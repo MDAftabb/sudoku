@@ -44,7 +44,26 @@ def is_valid(board,row,col,num):
 
 def find_empty(board):
     for r in range(9):
-        
+            for row in range(9):
+        for col in range(9):
+            if board[row][col] == 0:
+                return (row, col)
+    return None
+
+def solve(board):
+    cell= find_empty(board)
+    if cell is None:
+        return True
+
+    row, col = cell
+    for num in range(1,10):
+        if is_valid(board, row, col, num):
+            board[row][col] = num
+            if solve(board):
+                return True
+            board[row][col] = 0
+
+    return False
 
 def run_tests():
     
