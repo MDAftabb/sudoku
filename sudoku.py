@@ -59,3 +59,9 @@ def run_tests():
 if __name__ =="__main__":
     print_board(PUZZLE)
     run_tests()
+
+    board = copy.deepcopy(PUZZLE)
+    print(solve(board))
+    print_board(board)
+    print(PUZZLE[0][2]) No newline at end of file
+    
