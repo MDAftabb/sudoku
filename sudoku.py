@@ -1,4 +1,5 @@
 import copy
+import random
 
 
 PUZZLE = [
@@ -62,7 +63,67 @@ def solve(board):
                 return True
             board[row][col] = 0
 
-    return False
+    return False 
+
+def make_full_board():
+    board = [[0] * 9 for _ in range(9)]
+
+    def fill(b):
+        cell = find_empty(b)
+        if cell is None:
+            return True
+
+        row, col = cell
+        numbers = list(range(1, 10))
+        random.shuffle(numbers)
+        for num in numbers:
+            if is_valid(b, row, col, num):
+                b[row][col] = num
+                if fill(b):
+                    return True
+                b[row][col] = 0
+        return False
+
+    fill(board)
+    return board
+
+def count_solutions(board, limit=2):
+    cell = find_empty(board)
+    if cell is None:
+        return 1  # the board is full: that is one complete solution
+ 
+    row, col = cell
+    total = 0
+    for num in range(1, 10):
+        if is_valid(board, row, col, num):
+            board[row][col] = num
+            total += count_solutions(board, limit - total)
+            board[row][col] = 0
+            if total >= limit:
+                break
+    return total
+
+def make_puzzle(solution, clues):
+    puzzle = copy.deepcopy(solution) 
+ 
+    cells = [(row, col) for row in range(9) for col in range(9)]
+    random.shuffle(cells)
+ 
+    filled = 81
+    for row, col in cells:
+        if filled <= clues:
+            break
+        saved = puzzle[row][col]
+        puzzle[row][col] = 0
+        if count_solutions(copy.deepcopy(puzzle)) != 1:
+            puzzle[row][col] = saved 
+        else:
+            filled -= 1
+    return puzzle
+ 
+ 
+def board_to_string(board):
+    return "".join(str(value) for row in board for value in row)
 
 def run_tests():
     
@@ -75,11 +136,23 @@ def run_tests():
 
 
 if __name__ =="__main__":
-    print_board(PUZZLE)
     run_tests()
+     
+    full = make_full_board()
+    print_board(full)
+    print(find_empty(full))                              
+ 
+    # count_solutions
+    print(count_solutions(copy.deepcopy(PUZZLE)))       
+    print(count_solutions([[0] * 9 for _ in range(9)]))  
+ 
+    # make_puzzle
+    puzzle = make_puzzle(full, 30)
+    print_board(puzzle)
+    print(count_solutions(copy.deepcopy(puzzle)))        
+ 
+    # board_to_string
+    print(board_to_string(PUZZLE))
 
-    board = copy.deepcopy(PUZZLE)
-    print(solve(board))
-    print_board(board)
-    print(PUZZLE[0][2])
+
     
